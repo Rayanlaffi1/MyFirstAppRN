@@ -1,77 +1,67 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet,SectionList,RefreshControl ,Item,FlatList,SafeAreaView, Text,Button,TextInput, View, LogBox } from 'react-native';
+import { StyleSheet,ImageBackground,SectionList,Pressable,Modal,RefreshControl ,Item,FlatList,SafeAreaView, Text,Button,TextInput, View, LogBox } from 'react-native';
 import {useState} from "react"
 import React, {Component} from 'react';
+import FlatListGoal from "./composants/FlatListGoal.js";
+import ModalAjouter from "./composants/ModalAjouter.js";
 
 export default function App() {
   const [count, setCount] = useState( Math.max.apply(Math, goals.map(function(o) { return o.id; })) );
   const [TextInputValeur, onChangeTextInputValeur] = useState("Saisir goal");
   const [refreshing, setRefreshing] = React.useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  
   const onRefresh = () => {
     setRefreshing(true);
     setTimeout(() => { setRefreshing(false); }, 2);
-    
   };
+
   const addItem = () => {
     setCount(count + 1)
-    goals.push({texte:TextInputValeur,id: count})
-    console.log(goals)
+    let leCount = count + 1
+    goals.push({texte:TextInputValeur,id: leCount})
   };
-  function deleteItem(idParam) {
-    const resultIndex = goals.filter(item => item.id == idParam)
-    goals.splice(resultIndex, 1);
-    
-  }
-  
   return (
   <>
     {/* aurelien.chiren@gmail.com */}
-    <View style={styles.container}>
-        <FlatList
-          data={goals}
-          renderItem={({item}) => {
-            return <Text>- {item.texte}
-            <Button
-              onPress={() => {
-                deleteItem(item.id);
-                onRefresh();
-              }}
-              title="Remove"
-              color="#841584"
-            />
-          </Text>
+    <ImageBackground source={{ uri: "https://browsecat.net/sites/default/files/orange-background-hd-126457-578018-8630439.png" }} style={{ flex: 1}} resizeMode="cover">
+    <View style={{ width:'100%', height:'100%'  , paddingTop:50, padding:10}}>
+      
+
+      <ModalAjouter styles={styles} onRefresh={onRefresh} addItem={addItem} TextInputValeur={TextInputValeur} onChangeTextInputValeur={onChangeTextInputValeur} modalVisible={modalVisible} setModalVisible={setModalVisible}/>
+      <FlatListGoal goals={goals} onRefresh={onRefresh} refreshing={refreshing} />
+      <TextInput
+        style={styles.input}
+        placeholder="champ input"
+        keyboardType="default"
+        value={TextInputValeur}
+        onChangeText={onChangeTextInputValeur}
+      />
+      <Button
+          onPress={() => {
+            addItem();
+            onRefresh();
           }}
-          keyExtractor={item => item.id}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-            />
-          }
-        />
-          <TextInput
-          style={styles.input}
-          placeholder="champ input"
-          keyboardType="default"
-          value={TextInputValeur}
-          onChangeText={onChangeTextInputValeur}
-          />
-          <Button
-            onPress={() => {
-              addItem();
-              onRefresh();
-            }}
-            title="Add"
-            color="#841584"
-          />
-    </View>
-    <View style={styles.container}>
-      <Text style={{color: 'red', fontSize: 20}} >Open up <Text style={{ fontWeight:'bold' }} >App.js</Text> to start working on your app! </Text>
-      {/* { sampleGoals.map((goal) => <Text style={{color: 'black', fontSize: 20}} >{goal}</Text> ) } */}
-      
-      
+          title="Add"
+          color="#841584"
+      />
       <StatusBar style="auto" />
+      
+      
     </View>
+    </ImageBackground>
+    {/* <View style={styles.container}>
+    
+      
+    </View> */}
+    
+    {/* <View style={styles.container}> */}
+      {/* <Text style={{color: 'red', fontSize: 20}} >Open up <Text style={{ fontWeight:'bold' }} >App.js</Text> to start working on your app! </Text> */}
+      
+      
+
+      {/* <StatusBar style="auto" /> */}
+    {/* </View> */}
   </>
   );
 }
